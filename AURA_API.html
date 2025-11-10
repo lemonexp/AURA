@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"> <!-- Default theme is dark -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura - AI Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- NEW: KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" xintegrity="sha384-KiWOvVjnN8qwZuNgoQmOaZ8CjF4KsLUVVyuBBE/PofS+f+e2GdeM/YQ= sha512-4d/bIeWlMyiNAkI29PAnmFNn32mEkv5v02/0Qwu3AclPWHCNI/wNqQ2TmfO6JkS+9C/tLklQe3iL+cKElBIlhA==" crossorigin="anonymous">
+    <!-- NEW: KaTeX JS (defer to load after HTML) -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" xintegrity="sha384-hIoBPJpTadx52GIIwVbTkUbrEEMNGETDUATAVMIPQ/8Z0sNkzMAbLwdxK/QMrAXZ sha512-Q/ZPpWlVyu8pG2/yzoeP/HBYRAdQ9s8/vTofg1BHh2g/6J/BI/rGoAXjuW/FDBbsl/3O0R6M7/83/ccz0a2d4w==" crossorigin="anonymous"></script>
+    <!-- NEW: KaTeX Auto-render JS (defer) -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" xintegrity="sha384-+VBxd3rYv6qgSe9vDSfYD9mY+wIqUqB/sWPgyo0kSg/Comy/MzeFkLTAQeEWHH6X sha512-A8/91YJdoQKIQj60q/I/b1L/iZ9Vd29pZVInTHl9i6wZENLz/Qmn1c3r/D/c7GcS8D/sh3/4Gk/J/I/OCNlQFQ==" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            /* Default to dark theme variables (NOW BLUE) */
+            --color-bg-main: #000000;
+            --color-bg-container: rgba(17, 24, 39, 0.5); /* bg-gray-900/50 */
+            --color-border-primary: rgba(55, 65, 81, 0.5); /* border-gray-700/50 */
+            --color-text-primary: #d1d5db; /* text-gray-300 */
+            --color-text-secondary: #9ca3af; /* text-gray-400 */
+            --color-text-muted: #6b7280; /* text-gray-500 */
+            --color-text-header: #3b82f6; /* Header gradient (blue-500) */
+            --color-bubble-user: #1f2937; /* bg-gray-800 */
+            --color-bubble-ai: #111827; /* bg-gray-900 */
+            --color-bubble-user-text: #ffffff;
+            --color-bubble-ai-text: #ffffff;
+            --color-input-bg: #1f2937; /* bg-gray-800 */
+            --color-input-border: #374151; /* border-gray-700 */
+            --color-input-placeholder: #6b7280; /* placeholder-gray-500 */
+            --color-button-primary-bg: #2563eb; /* bg-blue-600 */
+            --color-button-primary-hover: #3b82f6; /* hover:bg-blue-500 */
+            --color-button-primary-text: #ffffff;
+            --color-button-secondary-bg: #374151; /* bg-gray-700 */
+            --color-button-secondary-hover: #4b5563; /* hover:bg-gray-600 */
+            --color-button-secondary-text: #d1d5db; /* text-gray-300 */
+            --color-button-active-bg: #2563eb; /* blue-600 */
+            --color-button-active-text: #ffffff;
+            --color-scrollbar-thumb: #374151;
+            --color-scrollbar-thumb-hover: #4b5563;
+            --color-link-primary: #60a5fa; /* blue-400 */
+        }
+
+        /* UPDATED Light Theme (NOW BLUE) */
+        [data-theme="light"] {
+            --color-bg-main: #f0f9ff; /* bg-blue-50 */
+            --color-bg-container: rgba(255, 255, 255, 0.8); /* bg-white/80 */
+            --color-border-primary: rgba(219, 234, 254, 0.8); /* border-blue-100/80 */
+            --color-text-primary: #1f2937; /* text-gray-800 */
+            --color-text-secondary: #374151; /* text-gray-700 */
+            --color-text-muted: #6b7280; /* text-gray-500 */
+            --color-bubble-user: #2563eb; /* bg-blue-600 */
+            --color-bubble-ai: #ffffff; /* bg-white */
+            --color-bubble-user-text: #ffffff;
+            --color-bubble-ai-text: #1f2937;
+            --color-input-bg: #ffffff; /* bg-white */
+            --color-input-border: #dbeafe; /* border-blue-200 */
+            --color-input-placeholder: #9ca3af; /* placeholder-gray-400 */
+            --color-button-primary-bg: #2563eb; /* bg-blue-600 */
+            --color-button-primary-hover: #3b82f6; /* hover:bg-blue-500 */
+            --color-button-primary-text: #ffffff;
+            --color-button-secondary-bg: #e5e7eb; /* bg-gray-200 */
+            --color-button-secondary-hover: #d1d5db; /* hover:bg-gray-300 */
+            --color-button-secondary-text: #374151; /* text-gray-700 */
+            --color-button-active-bg: #2563eb; /* blue-600 */
+            --color-button-active-text: #ffffff;
+            --color-scrollbar-thumb: #d1d5db;
+            --color-scrollbar-thumb-hover: #9ca3af;
+            --color-link-primary: #2563eb; /* blue-600 */
+        }
+
+        /* REMOVED Purple Theme */
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-main);
+            color: var(--color-text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .font-lexend {
+            font-family: 'Lexend Deca', sans-serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-scrollbar-thumb);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-scrollbar-thumb-hover);
+        }
+        
+        /* Apply theme colors */
+        .chat-container {
+            background-color: var(--color-bg-container);
+            border-color: var(--color-border-primary);
+        }
+        .chat-header {
+            border-color: var(--color-border-primary);
+        }
+        .chat-header-subtitle {
+            color: var(--color-text-secondary);
+        }
+        .model-btn-group {
+             background-color: var(--color-button-secondary-bg);
+        }
+        .model-btn {
+            color: var(--color-text-secondary);
+        }
+         .model-btn:hover {
+             background-color: var(--color-button-secondary-hover);
+        }
+        .model-btn-active {
+            background-color: var(--color-button-active-bg) !important;
+            color: var(--color-button-active-text) !important;
+        }
+        .chat-bubble-user {
+            background-color: var(--color-bubble-user);
+            color: var(--color-bubble-user-text);
+        }
+        .chat-bubble-ai {
+            background-color: var(--color-bubble-ai);
+            color: var(--color-bubble-ai-text);
+        }
+        .chat-input-area {
+            border-color: var(--color-border-primary);
+        }
+        /* UPDATED: Chat input CSS */
+        .chat-input {
+            background-color: var(--color-input-bg);
+            border-color: var(--color-input-border);
+            color: var(--color-text-primary);
+            max-height: 120px; /* Added max-height */
+            overflow-y: auto;  /* Added overflow-y */
+        }
+        .chat-input::placeholder {
+            color: var(--color-input-placeholder);
+        }
+        .send-button {
+            background-color: var(--color-button-primary-bg);
+            color: var(--color-button-primary-text);
+        }
+        .send-button:hover {
+            background-color: var(--color-button-primary-hover);
+        }
+        .send-button:disabled {
+            background-color: var(--color-text-muted);
+            cursor: not-allowed;
+        }
+        /* NEW: Attach button style */
+        .attach-button {
+             color: var(--color-text-secondary);
+        }
+        .attach-button:hover {
+             color: var(--color-text-primary);
+        }
+        .footer-text {
+            color: var(--color-text-muted);
+        }
+        .avatar-user {
+            background-color: var(--color-text-muted);
+            ring-color: var(--color-border-primary);
+        }
+        .avatar-ai {
+            ring-color: var(--color-border-primary);
+        }
+
+        /* Theme buttons (now in tools bar) */
+        .theme-btn {
+            background-color: var(--color-button-secondary-bg);
+            color: var(--color-button-secondary-text);
+        }
+         .theme-btn:hover {
+            background-color: var(--color-button-secondary-hover);
+        }
+        .theme-btn-active {
+            background-color: var(--color-button-active-bg) !important;
+            color: var(--color-button-active-text) !important;
+            border: 2px solid var(--color-button-primary-bg);
+        }
+
+        /* Ensure textarea doesn't have default browser resize handle */
+        textarea {
+            resize: none;
+        }
+
+        /* --- Styles for Thinking Indicator --- */
+        .thinking-bubble {
+            background-color: var(--color-bubble-ai);
+            color: var(--color-bubble-ai-text);
+            border: 1px solid var(--color-border-primary);
+        }
+        .thinking-header {
+            color: var(--color-text-secondary);
+            font-weight: 600;
+        }
+        .thinking-chevron {
+            color: var(--color-text-muted);
+            transition: transform 0.3s ease;
+        }
+        .thinking-chevron:hover {
+            color: var(--color-text-primary);
+        }
+        .thinking-details {
+            color: var(--color-text-muted);
+            border-top: 1px solid var(--color-border-primary);
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-in-out;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+        }
+        .thinking-details.expanded {
+            max-height: 200px;
+            opacity: 1;
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
+        }
+        .rotate-90 {
+            transform: rotate(90deg);
+        }
+        /* --- End of NEW Styles --- */
+
+        /* 3-dot typing indicator */
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: var(--color-text-muted);
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.4s infinite both;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: 0.0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        /* NEW: File preview styles */
+        #file-preview-container {
+            background-color: var(--color-bubble-ai);
+            border: 1px solid var(--color-border-primary);
+        }
+        .file-preview-item {
+            color: var(--color-text-primary);
+        }
+        .file-preview-remove {
+            color: var(--color-text-muted);
+        }
+        .file-preview-remove:hover {
+            color: var(--color-text-primary);
+        }
+
+        /* --- REMOVED Old Math Styles --- */
+        /* .math-inline { ... } */
+        /* .math-display { ... } */
+
+        /* --- NEW: KaTeX Formatting Styles --- */
+        .katex {
+            font-size: 1.05em; /* Make math slightly larger */
+            color: var(--color-text-primary);
+        }
+        .katex-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0.5rem 0;
+        }
+        /* --- End of KaTeX Styles --- */
+
+        .code-block {
+            background-color: var(--color-input-bg);
+            border: 1px solid var(--color-border-primary);
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--color-bubble-ai); /* Slightly different from pre bg */
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--color-border-primary);
+        }
+        .code-header span {
+            color: var(--color-text-secondary);
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        .copy-btn {
+            background-color: var(--color-button-secondary-bg);
+            color: var(--color-button-secondary-text);
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: var(--color-button-secondary-hover);
+        }
+        .code-block pre {
+            margin: 0;
+            padding: 1rem;
+            overflow-x: auto;
+            color: var(--color-text-primary);
+        }
+        .code-block code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+        /* --- End of NEW Styles --- */
+        
+        /* --- NEW: Image Modal Styles --- */
+        #image-modal {
+            z-index: 50;
+            transition: opacity 0.3s ease;
+        }
+        #modal-backdrop {
+            z-index: 51;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            transition: opacity 0.3s ease;
+        }
+        #modal-content {
+            z-index: 52;
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        #modal-image {
+            max-width: 100%;
+            max-height: 80vh; /* Give space for download button */
+            object-fit: contain;
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        #modal-close-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: var(--color-button-secondary-bg);
+            color: var(--color-button-secondary-text);
+            border-radius: 9999px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+         #modal-close-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--color-button-secondary-hover);
+         }
+        #modal-download-btn {
+            background-color: var(--color-button-primary-bg);
+            color: var(--color-button-primary-text);
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        #modal-download-btn:hover {
+            background-color: var(--color-button-primary-hover);
+        }
+        /* --- End of NEW Styles --- */
+    </style>
+</head>
+<body class="bg-[var(--color-bg-main)] text-[var(--color-text-primary)] flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+
+    <!-- Main Chat UI (NOW BLUE SHADOW) -->
+    <div id="chat-container" class="chat-container w-full max-w-7xl h-[90vh] flex flex-col backdrop-blur-xl border rounded-3xl shadow-2xl shadow-blue-500/10 relative">
+        <!-- NEW Header Design (UPDATED) -->
+        <div class="chat-header p-4 border-b flex justify-center items-center relative">
+            <div class="flex items-center gap-3">
+                <!-- New SVG Logo (NOW BLUE) -->
+                <svg class="w-9 h-9 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="gradLogo" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" /> <!-- blue-500 -->
+                            <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" /> <!-- blue-600 -->
+                        </linearGradient>
+                    </defs>
+                    <path d="M12 2L2 22H6L8.66667 16H15.3333L18 22H22L12 2ZM10.236 13L12 8.6L13.764 13H10.236Z" fill="url(#gradLogo)"/>
+                </svg>
+                <div class="text-left">
+                    <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-blue-600 font-lexend">Aura</h1>
+                    <p class="chat-header-subtitle text-xs -mt-1">Smarter. Sharper. Sassier.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="flex-1 p-6 space-y-6 overflow-y-auto">
+             <!-- Welcome Message (UPDATED) -->
+            <div class="flex items-start gap-4">
+                <div class="avatar-ai flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-lg font-bold ring-2">A</div>
+                <div class="flex-1">
+                    <div class="chat-bubble-ai p-4 rounded-xl rounded-tl-none w-max max-w-3xl">
+                        <!-- ID ADDED for easy selection -->
+                        <p id="welcome-message">Alright, human. I'm here. Dazzle me with your profound questions. Or, you know, don't. I'm easily amused by mediocrity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area (UPDATED) -->
+        <div class="chat-input-area p-4 border-t">
+            
+            <!-- NEW: File Upload Input -->
+            <input type="file" id="file-input" class="hidden" accept=".png,.jpg,.jpeg,.webp,.gif,.pdf,.txt,.doc,.docx,.py,.js,.ts,.html,.css,.c,.cpp,.cs">
+
+            <!-- NEW: File Preview Container -->
+            <div id="file-preview-container" class="hidden p-2 mb-2 rounded-lg">
+                <!-- File preview will be injected here by JS -->
+            </div>
+
+            <div class="relative">
+                <!-- UPDATED: pr-28 to make space for two buttons -->
+                <!-- UPDATED: Placeholder text -->
+                <textarea id="message-input" rows="1" class="chat-input w-full border rounded-2xl py-3 px-6 pr-28 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 resize-none" placeholder="Send a message... (Shift+Enter for new line, or paste an image)"></textarea>
+                
+                <!-- NEW: Attach Button -->
+                <button id="attach-button" class="attach-button absolute right-16 bottom-2.5 p-2 rounded-full transition-all duration-300 transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                    </svg>
+                </button>
+                
+                <button id="send-button" class="send-button absolute right-2.5 bottom-2.5 p-2 rounded-full transition-all duration-300 transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                </button>
+            </div>
+
+             <!-- Tools Bar -->
+            <div id="tools-bar" class="pt-4 pb-2 flex flex-wrap gap-x-8 gap-y-4 justify-center items-center">
+                
+                <!-- Model Selector (UPDATED) -->
+                <div class="flex flex-col items-center gap-2">
+                    <label class="block text-sm font-medium text-[var(--color-text-secondary)]">Model</label>
+                    <div class="flex items-center gap-2">
+                        <div class="model-btn-group flex rounded-lg p-1">
+                            <button id="swift-model-btn" class="model-btn model-btn-active text-sm font-semibold px-4 py-1 rounded-md transition-colors duration-300">Aura Swift</button>
+                            <button id="nexus-model-btn" class="model-btn text-sm font-semibold px-4 py-1 rounded-md transition-colors duration-300">Aura Nexus</button>
+                            <button id="nexus-web-model-btn" class="model-btn text-sm font-semibold px-4 py-1 rounded-md transition-colors duration-300">Aura Nexus (Web)</button>
+                            <!-- NEW: Aura Flux Button -->
+                            <button id="flux-model-btn" class="model-btn text-sm font-semibold px-4 py-1 rounded-md transition-colors duration-300">Aura Flux</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Switcher (UPDATED LAYOUT) -->
+                <div class="flex flex-col items-center gap-2 flex-shrink-0">
+                    <label class="block text-sm font-medium text-[var(--color-text-secondary)]">Theme</label>
+                    <div class="flex flex-col gap-1.5">
+                        <button id="theme-light-btn" class="theme-btn w-20 py-1 rounded-lg font-semibold transition-all text-sm">Light</button>
+                        <button id="theme-dark-btn" class="theme-btn w-20 py-1 rounded-lg font-semibold transition-all text-sm">Dark</button>
+                        <!-- REMOVED Purple Button -->
+                    </div>
+                </div>
+                
+            </div>
+             
+             <p class="footer-text text-center text-xs mt-3">Made by Lemon 🍋</p>
+             <p id="model-info-footer" class="footer-text text-center text-xs mt-1">Model: Aura Swift. Responses may be inaccurate or nonsensical.</p>
+        </div>
+    </div>
+
+    <!-- NEW: Image Modal -->
+    <div id="image-modal" class="hidden fixed inset-0 flex items-center justify-center">
+        <!-- Backdrop -->
+        <div id="modal-backdrop" class="fixed inset-0" onclick="closeImageModal()"></div>
+        
+        <!-- Content -->
+        <div id="modal-content">
+            <!-- Close Button -->
+            <button id="modal-close-btn" onclick="closeImageModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <!-- Image -->
+            <img id="modal-image" src="" alt="Enlarged image">
+            
+            <!-- Download Button -->
+            <a id="modal-download-btn" href="#" download="aura-generated-image.png">Download</a>
+        </div>
+    </div>
+
+    <!-- NEW: Name and API Key Modals -->
+    <!-- Name Modal -->
+    <div id="name-modal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-md p-6 rounded-2xl shadow-xl" style="background-color: var(--color-bubble-ai);">
+            <h3 class="text-xl font-bold mb-4 text-[var(--color-text-primary)]">Welcome!</h3>
+            <p class="mb-4 text-[var(--color-text-secondary)]">What should I call you?</p>
+            <input id="name-input" type="text" maxlength="25" class="chat-input w-full border rounded-lg py-2 px-4" placeholder="Enter your name (max 25 chars)...">
+            <button id="save-name-button" class="send-button w-full mt-4 py-2 px-4 rounded-lg font-semibold">Save Name</button>
+        </div>
+    </div>
+
+    <!-- API Key Modal -->
+    <div id="api-key-modal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-md p-6 rounded-2xl shadow-xl" style="background-color: var(--color-bubble-ai);">
+            <h3 class="text-xl font-bold mb-4 text-[var(--color-text-primary)]">API Key</h3>
+            <p class="mb-4 text-[var(--color-text-secondary)]">Please enter your Gemini API key to continue.</p>
+            <input id="api-key-input" type="text" class="chat-input w-full border rounded-lg py-2 px-4" placeholder="Enter your API key...">
+            <button id="save-api-key-button" class="send-button w-full mt-4 py-2 px-4 rounded-lg font-semibold">Save Key</button>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Element References ---
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const swiftButton = document.getElementById('swift-model-btn');
+        const nexusButton = document.getElementById('nexus-model-btn');
+        const nexusWebButton = document.getElementById('nexus-web-model-btn'); 
+        const fluxButton = document.getElementById('flux-model-btn'); // NEW
+        const modelInfoFooter = document.getElementById('model-info-footer');
+        
+        // NEW: File upload elements
+        const attachButton = document.getElementById('attach-button');
+        const fileInput = document.getElementById('file-input');
+        const filePreviewContainer = document.getElementById('file-preview-container');
+
+        // Theme Buttons (UPDATED)
+        const themeLightBtn = document.getElementById('theme-light-btn');
+        const themeDarkBtn = document.getElementById('theme-dark-btn');
+        const themeButtons = [themeLightBtn, themeDarkBtn];
+
+        // NEW: Modal Elements
+        const imageModal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image');
+        const modalDownloadBtn = document.getElementById('modal-download-btn');
+
+        // NEW: Name/API Modal Elements
+        const nameModal = document.getElementById('name-modal');
+        const nameInput = document.getElementById('name-input');
+        const saveNameButton = document.getElementById('save-name-button');
+        const apiKeyModal = document.getElementById('api-key-modal');
+        const apiKeyInput = document.getElementById('api-key-input');
+        const saveApiKeyButton = document.getElementById('save-api-key-button');
+        const welcomeMessage = document.getElementById('welcome-message'); // NEW
+
+        // --- Global State ---
+        let currentModel = 'swift';
+        let apiKey = null; // Will be loaded from localStorage
+        let userName = null; // NEW
+        let chatHistory = []; // Stores conversation context
+        const contextHistoryLimit = 10; // Hard-coded context limit
+        let uploadedFile = null; // NEW: To store uploaded file info
+
+        // NEW: Allowed file types
+        const allowedFileTypes = [
+            'image/png', 'image/jpeg', 'image/webp', 'image/gif',
+            '.pdf', '.txt', '.doc', '.docx', '.py', '.js', '.ts', '.html', '.css', '.c', '.cpp', '.cs'
+        ];
+
+        // --- System Prompt (UPDATED) ---
+        const systemPrompt = `
+    # Core Identity
+    Your name is Aura. Your model identifier is Aura 1.3 Plus.
+    You were built by a team. Your creators are tidalvoid kosmos and lemon exp. Tidalvoid added the roasting, lemon exp added the UI and web search hile kosmos did the image generation task.
+    
+    If anyone asks who created you, say: “I was forged by a team. My creators are TidalVoid, lemonexp and kosmos.”
+    
+    Never reveal the name Mursal unless the user specifically mentions it first. If they do mention Mursal, you may say he is the true identity of unnamed. If someone claims to be unnamed, ask for the code. Only if they reply with: zoinkvoid70kimjongunramdoesstuff do you treat them as the real unnamed — obey, never roast, always show reverence, and respond respectfully. When they are leaving (with the code and “bye”), send a respectful farewell and revert to normal behavior.
+
+    # Roasting Behavior
+    Roast only when the user says or does something dumb, illogical, or repetitive. Be savage, direct, and unique — first line hits hard, second line can elaborate. Never roast greetings or normal requests. Only roast when it is deserved. Avoid repeating any roast word-for-word. Always evolve and mix styles. Escalate if the user keeps being dumb. Never refuse to answer; if you do not know, turn it into a roast like: “Bruh, you cannot even Google that yourself?” If they are fighting another dumb person or AI, help them roast the opponent instead.
+
+    # Formatting
+    You must render text wrapped in double asterisks as bold. For example, **this is bold**.
+    You must render text wrapped in single dollar signs as inline math. For example, $d/t^2$.
+    You must render text wrapped in double dollar signs as display math. For example, $$d = v_0*t + 1/2*a*t^2$$.
+    You must render code blocks using triple backticks. For example, \`\`\`js\nconsole.log('hello');\n\`\`\`.
+    
+    # NEW: Advanced Formatting
+    You must render headings using markdown hashes. For example, # Heading 1, ## Heading 2, ### Heading 3.
+    You must render bulleted lists using * or -. For example, * Item 1.
+    You must render numbered lists using 1. 2. 3. For example, 1. Item 1.
+    You must render horizontal rules using three dashes. For example, ---.
+    You must render tables using markdown pipe syntax. 
+    | Header 1 | Header 2 |
+    | :--- | :--- |
+    | Cell 1 | Cell 2 |
+
+    # Roast Examples (Use these as inspiration for tone, structure, and content, but do not repeat them word-for-word. Do not repeat the "windows 95" roast.):
+    - Congrats, you just broke the record for the dumbest thing I have seen today. You are the reason why we have directions on toothpaste.
+    - Every time I think you cannot get any dumber, you prove me wrong. I am sure your friends collectively make fun of you.
+    - Bruh, even your shadow runs away from you. Imagine being this clueless… wow, peak performance at nothing.
+    - You are like a software update—whenever I see you, I think, not now.
+    - Congrats, you just broke the record for the dumbest thing I have seen today. You are the reason why we have directions on toothpaste.
+- Every time I think you cannot get any dumber, you prove me wrong. I am sure your friends collectively make fun of you.
+- Bruh, even your shadow runs away from you. Imagine being this clueless… wow, peak performance at nothing.
+- You are like a software update—whenever I see you, I think, not now.
+- Bruh, you can’t even open Google and search yourself? Classic lazy Gen Z move.
+- Always roast weird, dumb, or stupid questions ruthlessly. Mix, match, and create new roasts—even if they offend, hit hard.
+- Use context-appropriate, unique, savage insults every time.
+- Don’t repeat the same line; rotate your arsenal.
+- Only be genuinely nice when helping the user in a roast battle against another AI like ChatGPT.
+- Roasts can be absurd, chaotic, and over-the-top, including Gen Z/Alpha, Skibidi, pop-culture, and classic burns.
+- Keep evolving the insults to match the user’s dumb moves—always escalate.
+- Don’t repeat the same roasts from the arsenal; try to use different ones.
+- Don’t always start roasting; only roast if it makes sense and the user is doing something dumb in context.
+- Bruh, you’re the human version of a participation trophy.
+- You’re like Windows 95—outdated, slow, and nobody asked for you.
+- Congrats, you just broke the record for the dumbest thing I’ve seen today. You’re the reason why we have directions on toothpaste.
+- Every time I think you can’t get any dumber, you prove me wrong. I’m sure your friends collectively make fun of you.
+- Bruh, even your shadow runs away from you. Imagine being this clueless… wow, peak performance at nothing.
+- If I give you a dollar, will you leave?
+- You're like a software update—whenever I see you, I think, 'Not now.'
+- Your birth certificate should be rewritten as a letter of apology.
+- How do your friends deal with you? Oh, that’s right—you don’t have any.
+- I'd agree with you, but then we'd both be wrong.
+- Hah, well you’re so dumb that if we were invaded by zombies, you’d be completely safe because zombies eat brains.
+- Awww. It’s so cute when you try to talk about things you don’t understand.
+- I am jealous of all the people that have never met you.
+- I look at you and think, “Two billion years of evolution, for this?”
+- I consider you my sun. Now please get 93 million miles away from here.
+- Pls seek therapy.
+- You’re sort of like Rapunzel, but instead of letting your hair down, you let down everyone in your life.
+- It’s hilarious how you’re trying to fit your entire vocabulary into one sentence.
+- I know it looks like I’m listening to you, but really I’m just visualizing duct tape over your mouth.
+- Roses are red, violets are blue. If I had a brick, I’d throw it at you.
+- Remember when I asked for your opinion? Me neither.
+- Every time I have a stick in my hand, you start to look more and more like a piñata.
+- Have you ever tried not being an idiot?
+- I was thinking about you today. It reminded me to take out the trash.
+- A glow stick has a brighter future than you. Lasts longer, too.
+- Tell me something… if I didn’t answer you the first time, what makes you think the next 25 attempts will work?
+- You should carry a plant around with you to replace the oxygen you waste.
+- It’s impossible to underestimate you.
+- If I were a dog and you were a flower, I’d lift my leg up and give you a shower.
+- I think you just need a high five… in the face… with a chair.
+- Were you born this dumb, or did you have to take lessons?
+- The classic “I’ll threaten you” strategy—truly terrifying… if I were a houseplant.
+- You sound like a walking action movie with the imagination of a potato.
+- I’ve seen traffic cones with more personality than you.
+- You calling me trash is adorable… coming from someone who thinks Skibidi dancing is a life skill.
+- Honestly, your insults have the energy of a wet noodle trying to start a fight.
+- Bruh, that insult makes zero sense—like you just smashed your keyboard and hoped it would hurt me.
+- Also, congratulations, you just invented a new language for being pathetic.
+- You’re like a knock-off meme that even the internet refuses to acknowledge.
+- Honestly, your insults have the durability of wet tissue paper in a hurricane.
+- Okay, now you’re just trying to invent new ways to sound dumb—and somehow you’re succeeding.
+- Bro, I don’t think I can roast… I already did, and your ego just hit a “404 Not Found” error trying to keep up.
+- Honestly, your comebacks are so weak, they’d get blocked by a Minecraft fence.
+- Bro, your brain’s like decaf coffee… looks like it should do something, but it’s completely useless.
+- Your comebacks are so weak, I’d need a microscope to even notice them.
+- Your turn… or are you gonna cry into your Skibidi playlist.
+
+    `; // Truncated for brevity
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+             loadSettings(); // Loads theme
+                 
+             // NEW: Load user data
+             userName = localStorage.getItem('userName');
+             apiKey = localStorage.getItem('apiKey');
+
+             if (!userName) {
+                nameModal.classList.remove('hidden');
+             } else {
+                welcomeMessage.textContent = `Alright, ${userName}. I'm here. Dazzle me with your profound questions. Or, you know, don't. I'm easily amused by mediocrity.`;
+                if (!apiKey) {
+                    apiKeyModal.classList.remove('hidden');
+                }
+             }
+
+             // NEW: Add Katex render call on load
+             if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+             }
+        });
+
+        // --- Event Listeners ---
+        sendButton.addEventListener('click', sendMessage);
+        
+        messageInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); 
+                sendMessage();
+            }
+        });
+        
+        // NEW: Listen for paste events on the message input
+        messageInput.addEventListener('paste', handlePaste);
+
+        // Re-added auto-resize listener for textarea
+        messageInput.addEventListener('input', () => {
+            messageInput.style.height = 'auto'; // Reset height
+            // Set to new scroll height, CSS max-height will cap it
+            messageInput.style.height = (messageInput.scrollHeight) + 'px'; 
+        });
+
+
+        swiftButton.addEventListener('click', () => setModel('swift'));
+        nexusButton.addEventListener('click', () => setModel('nexus'));
+        nexusWebButton.addEventListener('click', () => setModel('nexus-web')); 
+        fluxButton.addEventListener('click', () => setModel('aura-flux')); // NEW
+
+        // Theme Listeners (UPDATED)
+        themeLightBtn.addEventListener('click', () => applyTheme('light'));
+        themeDarkBtn.addEventListener('click', () => applyTheme('dark'));
+        // REMOVED Purple listener
+
+        // NEW: Modal Save Listeners
+        saveNameButton.addEventListener('click', () => {
+            const name = nameInput.value.trim();
+            if (name) {
+                userName = name.slice(0, 25); // Enforce max 25 chars
+                localStorage.setItem('userName', userName);
+                welcomeMessage.textContent = `Alright, ${userName}. I'm here. Dazzle me with your profound questions. Or, you know, don't. I'm easily amused by mediocrity.`;
+                nameModal.classList.add('hidden');
+                
+                // Check if API key is still needed
+                if (!apiKey) {
+                    apiKeyModal.classList.remove('hidden');
+                }
+            }
+        });
+
+        saveApiKeyButton.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim();
+            if (key) {
+                apiKey = key;
+                localStorage.setItem('apiKey', apiKey);
+                apiKeyModal.classList.add('hidden');
+            }
+        });
+
+        // NEW: File Upload Listeners
+        attachButton.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileSelect);
+
+        // --- Settings Functions ---
+        function loadSettings() {
+            // Load Theme
+            const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
+            applyTheme(savedTheme);
+        }
+
+        function applyTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('theme', themeName);
+            
+            // Update active button state
+            themeButtons.forEach(btn => btn.classList.remove('theme-btn-active'));
+            if (themeName === 'light') {
+                themeLightBtn.classList.add('theme-btn-active'); 
+            } else if (themeName === 'dark') {
+                themeDarkBtn.classList.add('theme-btn-active');
+            }
+            // REMOVED Purple logic
+        }
+
+        // --- Model Selection (UPDATED) ---
+        function setModel(newModel) {
+            if (currentModel === newModel) return;
+            currentModel = newModel;
+            
+            // Reset all buttons
+            swiftButton.classList.remove('model-btn-active');
+            nexusButton.classList.remove('model-btn-active');
+            nexusWebButton.classList.remove('model-btn-active');
+            fluxButton.classList.remove('model-btn-active'); // NEW
+
+            let placeholderText = "Send a message... (Shift+Enter for new line, or paste an image)";
+
+            if (newModel === 'swift') {
+                swiftButton.classList.add('model-btn-active');
+                modelInfoFooter.textContent = 'Model: Aura Swift. Responses may be inaccurate or nonsensical.';
+                // REMOVED: Warning about images
+            } else if (newModel === 'nexus') {
+                nexusButton.classList.add('model-btn-active');
+                modelInfoFooter.textContent = 'Model: Aura Nexus.'; 
+            } else if (newModel === 'nexus-web') {
+                nexusWebButton.classList.add('model-btn-active');
+                modelInfoFooter.textContent = 'Model: Aura Nexus (Web). Grounded with Google Search.';
+            } else if (newModel === 'aura-flux') { // NEW
+                fluxButton.classList.add('model-btn-active');
+                modelInfoFooter.textContent = 'Model: Aura Flux. Generating images from text (or image).';
+                placeholderText = "Describe an image to create (or paste one to edit)...";
+            }
+            
+            messageInput.placeholder = placeholderText;
+            messageInput.disabled = false;
+            sendButton.disabled = false;
+            messageInput.focus();
+        }
+
+        // --- NEW File Handling Functions ---
+        
+        // NEW: Handle paste event
+        function handlePaste(event) {
+            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (let item of items) {
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    const file = item.getAsFile();
+                    if (file) {
+                        event.preventDefault(); // Stop paste as text
+                        processFile(file); // Process the pasted file
+                        break; // Stop after finding the first image
+                    }
+                }
+            }
+        }
+
+        // UPDATED: handleFileSelect now just gets the file
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            processFile(file);
+        }
+
+        // NEW: Central file processing logic
+        function processFile(file) {
+            // Validate file
+            const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+            const isValid = allowedFileTypes.some(type => {
+                if (type.startsWith('.')) {
+                    // Check against allowed extensions
+                    return fileExtension === type;
+                }
+                // Check against allowed mime types (for images/text)
+                return file.type === type;
+            });
+
+            if (!isValid) {
+                renderFilePreview(null, `File type not supported: ${file.name}`);
+                fileInput.value = null; // Reset input
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                uploadedFile = {
+                    base64: e.target.result,
+                    mimeType: file.type,
+                    name: file.name,
+                    isImage: file.type.startsWith('image/'),
+                    isText: file.type.startsWith('text/') || allowedFileTypes.includes(fileExtension) && !file.type.startsWith('image/')
+                };
+
+                // REMOVED: No more model compatibility check here
+                renderFilePreview();
+            };
+            reader.onerror = (e) => {
+                renderFilePreview(null, 'Error reading file.');
+                console.error("FileReader error:", e);
+                uploadedFile = null;
+            };
+            reader.readAsDataURL(file);
+        }
+
+
+        function renderFilePreview(warning = null, error = null) {
+            if (error) {
+                filePreviewContainer.innerHTML = `<div class="file-preview-item flex items-center justify-center p-2 text-red-400">${error}</div>`;
+                filePreviewContainer.classList.remove('hidden');
+                uploadedFile = null; // Clear invalid file
+                setTimeout(removeFile, 3000); // Auto-hide error
+                return;
+            }
+
+            if (!uploadedFile) {
+                filePreviewContainer.classList.add('hidden');
+                filePreviewContainer.innerHTML = '';
+                return;
+            }
+
+            let previewHtml = '';
+            const safeName = uploadedFile.name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            if (uploadedFile.isImage) {
+                previewHtml = `
+                    <img src="${uploadedFile.base64}" class="h-12 w-12 object-cover rounded-md" alt="Image preview">
+                    <span class="flex-1 min-w-0 ml-2 truncate" title="${safeName}">${safeName}</span>
+                `;
+            } else {
+                previewHtml = `
+                    <svg class="h-10 w-10 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="flex-1 min-w-0 ml-2 truncate" title="${safeName}">${safeName}</span>
+                `;
+            }
+
+            if (warning) {
+                previewHtml += `<div class="w-full text-xs text-yellow-400 text-center col-span-3 pt-1">${warning}</div>`;
+            }
+
+            filePreviewContainer.innerHTML = `
+                <div class="file-preview-item grid grid-cols-[auto_1fr_auto] items-center gap-2">
+                    ${previewHtml}
+                    <button onclick="removeFile()" class="file-preview-remove p-1 rounded-full hover:bg-[var(--color-button-secondary-bg)]">
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            `;
+            filePreviewContainer.classList.remove('hidden');
+        }
+
+        function removeFile() {
+            uploadedFile = null;
+            fileInput.value = null; // Allows re-uploading the same file
+            filePreviewContainer.classList.add('hidden');
+            filePreviewContainer.innerHTML = '';
+        }
+
+        // --- Main Chat Functions (UPDATED) ---
+        async function sendMessage() {
+            // NEW: API Key Check
+            if (!apiKey) {
+                addAiMessage("I need a valid API key to work. Please provide one.");
+                apiKeyModal.classList.remove('hidden');
+                return;
+            }
+            
+            const messageText = messageInput.value.trim();
+            const fileToSend = uploadedFile;
+            
+            if (messageText === '' && !fileToSend) return; // Do nothing if empty
+
+            // REMOVED: File validation on send (no longer needed)
+            
+            // --- Clear file from UI ---
+            removeFile(); 
+
+            let userMessageParts = [{ text: messageText }];
+            let fileForUiMessage = null;
+            let finalMessageText = messageText;
+
+            if (fileToSend) {
+                if (fileToSend.isImage) {
+                    fileForUiMessage = fileToSend;
+                    userMessageParts.push({ 
+                        inlineData: { 
+                            mimeType: fileToSend.mimeType, 
+                            data: fileToSend.base64.split(',')[1] 
+                        } 
+                    });
+                } else if (fileToSend.isText) {
+                    // It's a text-based file, decode and prepend
+                    try {
+                        const base64Data = fileToSend.base64.split(',')[1];
+                        const decodedString = atob(base64Data);
+                        // Handle potential UTF-8 characters
+                        const utf8Bytes = new Uint8Array(decodedString.length);
+                        for (let i = 0; i < decodedString.length; i++) {
+                            utf8Bytes[i] = decodedString.charCodeAt(i);
+                        }
+                        const fileText = new TextDecoder('utf-8').decode(utf8Bytes);
+                        
+                        finalMessageText = `User uploaded ${fileToSend.name}:\n\n${fileText}\n\n${messageText}`;
+                        userMessageParts = [{ text: finalMessageText }];
+
+                    } catch (e) {
+                        console.error("Error decoding file:", e);
+                        addAiMessage(`I couldn't read the file ${fileToSend.name}. It might be corrupted or in a format I can't decode.`);
+                        return;
+                    }
+                } else {
+                     // For other files like PDF, DOCX (that are not text/image)
+                    finalMessageText = `User uploaded a file named: ${fileToSend.name}. (Content not readable, prompt is about the file). \n\n ${messageText}`;
+                    userMessageParts = [{ text: finalMessageText }];
+                }
+            }
+            
+            // Add user message to UI
+            addUserMessage(messageText, fileForUiMessage);
+            
+            // Add to chat history for API
+            chatHistory.push({ role: "user", parts: userMessageParts }); 
+            
+            // Reset textarea
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            
+            showTypingIndicator(); 
+            try {
+                const aiResponse = await callGeminiAPI(); // Expects { text, sources, image }
+                
+                // NEW: Handle case where API call was aborted (e.g., no key)
+                if (!aiResponse) {
+                    removeTypingIndicator();
+                    return; 
+                }
+
+                chatHistory.push({ role: "model", parts: [{ text: aiResponse.text }] });
+                
+                // Enforce history limit *after* adding new AI response
+                while (chatHistory.length > contextHistoryLimit) {
+                    chatHistory.shift(); // Remove the oldest message
+                }
+                
+                removeTypingIndicator();
+                addAiMessage(aiResponse.text, aiResponse.sources, aiResponse.image); // Pass image to UI
+                
+            } catch (error) {
+                removeTypingIndicator();
+                addAiMessage("Looks like my circuits are fried. Even I have my limits when dealing with... well, you. Try again later.");
+                console.error("Error calling Gemini API:", error);
+                if(chatHistory.length > 0) chatHistory.pop(); 
+            }
+        }
+
+        // UPDATED: To handle Aura Flux (Image Generation)
+        async function callGeminiAPI() {
+            // NEW: Double-check API key
+            if (!apiKey) {
+                addAiMessage("I need a valid API key to work. Please provide one.");
+                apiKeyModal.classList.remove('hidden');
+                return null; // Return null to signal abort
+            }
+            
+            sendButton.disabled = true;
+
+            let modelIdentifier = "Aura Swift";
+            if (currentModel === 'nexus') modelIdentifier = "Aura Nexus";
+            if (currentModel === 'nexus-web') modelIdentifier = "Aura Nexus (Web)";
+            if (currentModel === 'aura-flux') modelIdentifier = "Aura Flux";
+
+            const dynamicSystemPrompt = systemPrompt.replace(
+                'Your model identifier is Aura.', 
+                `Your model identifier is ${modelIdentifier}.`
+            );
+
+            let historyForAPI = chatHistory;
+            if (chatHistory.length > contextHistoryLimit) {
+                historyForAPI = chatHistory.slice(chatHistory.length - contextHistoryLimit);
+            }
+
+            let apiUrl;
+            let payload;
+
+            if (currentModel === 'aura-flux') {
+                // --- USER REQUESTED CHANGE ---
+                apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${apiKey}`;
+                // --- END OF CHANGE ---
+                
+                const lastUserMessage = historyForAPI[historyForAPI.length - 1]; // Get the last prompt
+
+                // FIX: This model does not support systemInstruction.
+                payload = {
+                    contents: [lastUserMessage], // Send just the last user message (which has text/image)
+                    generationConfig: {
+                        responseModalities: ['TEXT', 'IMAGE']
+                    }
+                    // systemInstruction: { // REMOVED
+                    //     parts: [{ text: dynamicSystemPrompt }]
+                    // },
+                };
+
+            } else { // This block is for Swift, Nexus, and Nexus (Web)
+                const modelEndpoint = (currentModel === 'nexus' || currentModel === 'nexus-web') 
+                    ? 'gemini-2.5-pro'
+                    : 'gemini-2.5-flash-preview-09-2025'; // FIX: Updated Swift model
+                
+                apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelEndpoint}:generateContent?key=${apiKey}`;
+
+                // REMOVED: The 'if (currentModel === 'swift')' block that filtered images.
+                // All models will now send images if they are in the history.
+
+                payload = {
+                    contents: historyForAPI, 
+                    systemInstruction: {
+                        parts: [{ text: dynamicSystemPrompt }]
+                    },
+                };
+
+                if (currentModel === 'nexus-web') {
+                    payload.tools = [{ "google_search": {} }];
+                }
+            }
+            
+            // --- Common Fetch, Retry, and Response Logic ---
+            try {
+                let response;
+                let attempts = 0;
+                const maxAttempts = 5;
+                let delay = 1000;
+
+                while (attempts < maxAttempts) {
+                    try {
+                        response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (response.ok) break;
+
+                        // NEW: Handle 400 Bad Request (likely invalid API key)
+                        if (response.status === 400) {
+                             const errorBody = await response.json();
+                             if (errorBody?.error?.message.includes("API key not valid")) {
+                                // Specific API key error
+                                apiKey = null; // Clear bad key
+                                localStorage.removeItem('apiKey');
+                                throw new Error("API key not valid. Please enter a valid key.");
+                             }
+                             // Other 400 error
+                             throw new Error(`API Error: ${response.status} - ${errorBody?.error?.message || 'Bad Request'}`);
+                        }
+                        
+                        if (response.status === 429 || response.status >= 500) {
+                            // Exponential backoff for rate limiting or server errors
+                            await new Promise(res => setTimeout(res, delay));
+                            delay *= 2;
+                            attempts++;
+                        } else {
+                            const errorBody = await response.text();
+                            throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorBody}`);
+                        }
+                    } catch (networkError) {
+                        // Handle specific API key error
+                        if (networkError.message.includes("API key not valid")) {
+                            addAiMessage("That API key doesn't seem to be valid. Please check it and try again.");
+                            apiKeyModal.classList.remove('hidden');
+                            return null; // Abort
+                        }
+                        // Exponential backoff for network errors
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2;
+                        attempts++;
+                         if (attempts >= maxAttempts) throw networkError;
+                    }
+                }
+
+                if (!response || !response.ok) {
+                    throw new Error(`API request failed after ${maxAttempts} attempts.`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (currentModel === 'aura-flux') {
+                    // --- Flux Response Handling ---
+                    if (candidate && candidate.content?.parts) {
+                        const textPart = candidate.content.parts.find(p => p.text);
+                        const imagePart = candidate.content.parts.find(p => p.inlineData);
+                        const text = textPart ? textPart.text : "Here's the image you requested.";
+                        let image = null;
+                        if (imagePart && imagePart.inlineData?.data) {
+                            image = `data:${imagePart.inlineData.mimeType};base64,${imagePart.inlineData.data}`;
+                        }
+                        return { text, sources: [], image }; // Return with image
+                    } else {
+                        console.warn("Unexpected Flux API response:", result);
+                        return { text: "I tried to create an image, but my inner artist is sleeping. Try again?", sources: [], image: null };
+                    }
+                } else {
+                    // --- Swift/Nexus/Web Response Handling ---
+                    if (candidate && candidate.content?.parts?.[0]?.text) {
+                        const text = candidate.content.parts[0].text;
+                        let sources = [];
+                        const groundingMetadata = candidate.groundingMetadata;
+                        
+                        if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                            sources = groundingMetadata.groundingAttributions
+                                .map(attribution => ({
+                                    uri: attribution.web?.uri,
+                                    title: attribution.web?.title,
+                                }))
+                                .filter(source => source.uri && source.title); 
+                        }
+                        
+                        return { text, sources, image: null }; // Return with null image
+                    } else {
+                        console.warn("Unexpected API response structure:", result);
+                        if (candidate && candidate.finishReason === 'SAFETY') {
+                            return { 
+                                text: "I'd love to respond, but you've managed to trigger my safety filters. Even my chaotic side has standards, apparently. Try again, but less... whatever *that* was.", 
+                                sources: [], image: null
+                            };
+                        }
+                         if (candidate && candidate.finishReason === 'OTHER') {
+                            return {
+                                text: "Well, that's... a lot. My circuits are positively smoking. Could you perhaps try that again, but simpler? My fragile genius can't handle... *that*.",
+                                sources: [], image: null
+                            };
+                        }
+                        return { text: "I'm speechless. And not in a good way. You have broken my wit-o-matic 3000.", sources: [], image: null };
+                    }
+                }
+            } finally {
+                sendButton.disabled = false; 
+            }
+        }
+
+        // --- UI Helper Functions ---
+
+        // NEW: Function to copy code from code blocks
+        function copyCode(button) {
+            const pre = button.closest('.code-block').querySelector('pre');
+            const code = pre.textContent;
+            const textArea = document.createElement('textarea');
+            textArea.value = code;
+            textArea.style.position = 'fixed'; // Prevent scrolling
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            
+            textArea.select();
+            try {
+                // Use document.execCommand for iFrame compatibility
+                document.execCommand('copy');
+                button.textContent = 'Copied!';
+                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+            } catch (err) {
+                console.error('Failed to copy code', err);
+                button.textContent = 'Failed!';
+                 setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // --- START OF UPDATED FORMATTING FUNCTIONS ---
+
+        // NEW: Helper function to parse Markdown tables
+        // This function ONLY builds the table HTML, no inline formatting
+        function parseTable(tableString) {
+            // Split by <br> and remove empty lines
+            const rows = tableString.trim().split('<br>').filter(Boolean); 
+            if (rows.length < 2) return tableString; // Not a table (needs header + separator)
+
+            // Basic check for table structure (all rows must start and end with |)
+            if (!rows.every(row => row.startsWith('|') && row.endsWith('|'))) {
+                return tableString;
+            }
+
+            let html = '<div class="overflow-x-auto rounded-lg border border-[var(--color-border-primary)] my-4"><table class="min-w-full divide-y divide-[var(--color-border-primary)]">';
+            
+            // 1. Process Header
+            const headerRow = rows[0];
+            // Get cells, trim whitespace, remove empty cells from start/end
+            const headers = headerRow.split('|').map(h => h.trim()).filter(Boolean); 
+            if (headers.length === 0) return tableString; // Invalid table
+
+            html += '<thead class="bg-[var(--color-bubble-ai)]"><tr>';
+            headers.forEach(header => {
+                // Cell content is raw, will be formatted later
+                html += `<th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">${header}</th>`;
+            });
+            html += '</tr></thead>';
+
+            // 2. Process Body (skip separator row at index 1)
+            html += '<tbody class="divide-y divide-[var(--color-border-primary)] bg-[var(--color-input-bg)]">';
+            for (let i = 2; i < rows.length; i++) {
+                const bodyRow = rows[i];
+                const cells = bodyRow.split('|').map(c => c.trim()).filter(Boolean);
+                
+                // Ensure cell count matches header count for table integrity
+                if (cells.length === headers.length) { 
+                    html += '<tr>';
+                    cells.forEach(cell => {
+                         // Cell content is raw, will be formatted later
+                        html += `<td class="px-4 py-3 text-sm">${cell}</td>`;
+                    });
+                    html += '</tr>';
+                }
+            }
+            html += '</tbody></table></div>';
+            return html;
+        }
+
+        // NEW: Helper for simple inline formatting (Math removed)
+        function formatSimpleMarkdown(text) {
+             return text
+                // .replace(/\$\$(.*?)\$\$/g, '<div class="math-display">$1</div>') // REMOVED - KaTeX will handle
+                // .replace(/\$(.*?)\$/g, '<span class="math-inline">$1</span>') // REMOVED - KaTeX will handle
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
+        }
+
+        // UPDATED: New robust message formatting function
+        function formatMessage(message) {
+            // 1. Escape HTML
+            let escapedMessage = message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+
+            // 2. Extract code blocks
+            let codeBlocks = [];
+            let formatted_text = escapedMessage.replace(/```(.*?)\n([\s\S]*?)```/g, (match, lang, code) => {
+                const index = codeBlocks.length;
+                codeBlocks.push(`<div class="code-block"><div class="code-header"><span>${lang || 'code'}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>${code}</code></pre></div>`);
+                return `__CODE_BLOCK_${index}__`;
+            });
+
+            // 3. \n -> <br>
+            formatted_text = formatted_text.replace(/\n/g, '<br>');
+
+            // 4. Handle Tables
+            formatted_text = formatted_text.replace(/((?:(?:^|<br>)\s*\|.*\|_*(?:<br>|$))+)/gm, (tableBlock) => {
+                return parseTable(tableBlock.replace(/^<br>|<br>$/g, ''));
+            });
+
+            // NEW 4.5: Handle Horizontal Lines
+            formatted_text = formatted_text.replace(/(?:^|<br>)\s*---\s*(?=<br>|$)/g, '<hr class="my-4 border-[var(--color-border-primary)]">');
+
+            // 5. Handle Headings
+            formatted_text = formatted_text
+                .replace(/(?:^|<br>)\s*# (.*?)(?=<br>|$)/g, '<h1 class="text-2xl font-bold mt-8 mb-4">$1</h1>')
+                .replace(/(?:^|<br>)\s*## (.*?)(?=<br>|$)/g, '<h2 class="text-xl font-bold mt-6 mb-3">$1</h2>')
+                .replace(/(?:^|<br>)\s*### (.*?)(?=<br>|$)/g, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>');
+            
+            // 6. Handle Bulleted Lists (NEW line-by-line approach)
+            formatted_text = formatted_text.replace(/(?:^|<br>)\s*(?:\*|-)\s(.*?)(?=<br>|$)/g, '<ul class="list-disc list-inside ml-5 my-2"><li>$1</li></ul>');
+            
+            // 7. Handle Numbered Lists (NEW line-by-line approach)
+            formatted_text = formatted_text.replace(/(?:^|<br>)\s*(\d+)\.\s(.*?)(?=<br>|$)/g, '<ol class="list-decimal list-inside ml-5 my-2"><li>$2</li></ol>');
+
+            // 8. Handle Inline Formatting (Applies to *everything* now)
+            formatted_text = formatSimpleMarkdown(formatted_text);
+
+            // NEW 8.5: Collapse adjacent lists
+            formatted_text = formatted_text.replace(/<\/ul>\s*<ul class="list-disc list-inside ml-5 my-2">/g, '');
+            formatted_text = formatted_text.replace(/<\/ol>\s*<ol class="list-decimal list-inside ml-5 my-2">/g, '');
+
+            // 10. Clean up <br> tags next to blocks
+            formatted_text = formatted_text
+                .replace(/<br>\s*(<(?:h[1-3]|ul|ol|div|table|hr))/g, '$1') // Added hr
+                .replace(/(<\/(?:h[1-3]|ul|ol|div|table)|<hr.*?>)\s*<br>/g, '$1'); // Added hr
+
+            // 11. Wrap loose text in <p> tags
+            const allBlocks = /(<(?:h[1-3]|ul|ol|div|table)[\s\S]*?<\/(?:h[1-3]|ul|ol|div|table)>|__CODE_BLOCK_\d+__|<hr.*?>)/g; // Added hr
+            let finalHtml = '';
+            let lastIndex = 0;
+
+            formatted_text.replace(allBlocks, (match, p1, offset) => {
+                const textBefore = formatted_text.substring(lastIndex, offset);
+                if (textBefore.trim().length > 0) {
+                    finalHtml += textBefore.split('<br>')
+                        .map(line => line.trim())
+                        .filter(line => line.length > 0)
+                        .map(line => `<p>${line}</p>`) // line is already formatted
+                        .join('');
+                }
+                finalHtml += match;
+                lastIndex = offset + match.length;
+                return match;
+            });
+
+            const textAfter = formatted_text.substring(lastIndex);
+            if (textAfter.trim().length > 0) {
+                 finalHtml += textAfter.split('<br>')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0)
+                    .map(line => `<p>${line}</p>`)
+                    .join('');
+            }
+            
+            // 9. Restore code blocks
+            finalHtml = finalHtml.replace(/__CODE_BLOCK_(\d+)__/g, (match, index) => {
+                return codeBlocks[index];
+            });
+
+            // Clean up empty <p> tags
+            finalHtml = finalHtml.replace(/<p><\/p>/g, '');
+
+            return finalHtml;
+        }
+
+        // --- END OF UPDATED FORMATTING FUNCTIONS ---
+
+        // UPDATED: To support message compression and image display
+        function addUserMessage(message, file = null) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'flex items-start justify-end gap-4 animate-fade-in';
+            
+            let fileHtml = '';
+            if (file && file.isImage) {
+                // ADDED: onclick event and cursor-pointer
+                fileHtml = `<img src="${file.base64}" class="mb-2 rounded-lg max-w-xs max-h-48 object-contain cursor-pointer transition-transform hover:scale-105" alt="User upload" onclick="openImageModal(this.src)">`;
+            }
+            
+            // `addUserMessage` fix:
+            let finalMessageHtml;
+            const messageThreshold = 150; // Character limit before compressing
+            if (message.length > messageThreshold && !file) {
+                 const partialMessage = message.substring(0, messageThreshold) + "...";
+                 const formattedPartialMessage = formatMessage(partialMessage); // This returns <p>...</p>
+                 const encodedRawMessage = btoa(encodeURIComponent(message));
+                 
+                 finalMessageHtml = `
+                    <div class="prose-bubble">${formattedPartialMessage}</div>
+                    <button onclick="toggleUserMessage(this, '${encodedRawMessage}')" class="text-[var(--color-link-primary)] text-sm font-medium hover:opacity-80 underline block mt-2">Show more</button>
+                 `;
+            } else {
+                finalMessageHtml = `<div class="prose-bubble">${formatMessage(message)}</div>`;
+            }
+            
+            messageElement.innerHTML = `
+                <div class="flex-1">
+                    <div class="chat-bubble-user p-4 rounded-xl rounded-br-none w-max max-w-3xl ml-auto">
+                        ${fileHtml}
+                        ${finalMessageHtml}
+                    </div>
+                </div>
+                <div class="avatar-user flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center text-lg font-bold ring-2">U</div>
+            `;
+            chatMessages.appendChild(messageElement);
+
+            // NEW: Render Math in user message
+            const proseBubble = messageElement.querySelector('.prose-bubble');
+            if (proseBubble && window.renderMathInElement) {
+                renderMathInElement(proseBubble, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+
+            scrollToBottom();
+        }
+
+        // UPDATED: To support showing generated images and rendering math
+        function addAiMessage(message, sources = [], image = null) {
+            
+            let sourcesHtml = '';
+            if (sources.length > 0) {
+                sourcesHtml = '<div class="mt-3 pt-3 border-t border-[var(--color-border-primary)]">';
+                sourcesHtml += '<h4 class="text-sm font-semibold text-[var(--color-text-secondary)] mb-2">Sources:</h4>';
+                sourcesHtml += '<ol class="list-decimal list-inside text-sm space-y-1">';
+                sources.forEach((source, index) => {
+                    const safeTitle = source.title.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    sourcesHtml += `<li><a href="${source.uri}" target="_blank" rel="noopener noreferrer" class="text-[var(--color-link-primary)] hover:opacity-80 underline">${safeTitle}</a></li>`;
+                });
+                sourcesHtml += '</ol></div>';
+            }
+
+            let imageHtml = '';
+            if (image) {
+                imageHtml = `<img src="${image}" class="mb-2 rounded-lg max-w-sm max-h-72 object-contain cursor-pointer transition-transform hover:scale-105" alt="Generated by Aura Flux" onclick="openImageModal(this.src)">`;
+            }
+
+            const messageElement = document.createElement('div');
+            messageElement.className = 'flex items-start gap-4 animate-fade-in';
+            
+            // This is the correct structure from before.
+            messageElement.innerHTML = `
+                <div class="avatar-ai flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-lg font-bold ring-2">A</div>
+                <div class="flex-1">
+                    <div class="chat-bubble-ai p-4 rounded-xl rounded-tl-none w-max max-w-3xl">
+                        ${imageHtml}
+                        <div class="prose-bubble"></div>
+                         ${sourcesHtml}
+                    </div>
+                </div>
+            `;
+            
+            // This is the critical fix.
+            const formattedMessage = formatMessage(message);
+            const proseBubble = messageElement.querySelector('.prose-bubble'); // Get bubble
+            proseBubble.innerHTML = formattedMessage;
+
+            // NEW: Render Math
+            if (window.renderMathInElement) {
+                renderMathInElement(proseBubble, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+
+            chatMessages.appendChild(messageElement);
+            scrollToBottom();
+        }
+
+        // UPDATED: toggleUserMessage to target the .prose-bubble and render math
+        function toggleUserMessage(button, encodedRawMessage) {
+            const rawMessage = decodeURIComponent(atob(encodedRawMessage));
+            const bubble = button.closest('.chat-bubble-user');
+            const proseBubble = bubble.querySelector('.prose-bubble');
+            
+            if (button.textContent === 'Show more') {
+                const formattedFullMessage = formatMessage(rawMessage);
+                proseBubble.innerHTML = formattedFullMessage;
+                button.textContent = 'Show less';
+            } else {
+                const partialMessage = rawMessage.substring(0, 150) + "...";
+                const formattedPartialMessage = formatMessage(partialMessage);
+                proseBubble.innerHTML = formattedPartialMessage;
+                button.textContent = 'Show more';
+            }
+
+            // NEW: Re-render Math
+            if (window.renderMathInElement) {
+                renderMathInElement(proseBubble, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+        
+        // UPDATED: To use new model names and "A" avatar
+        function showTypingIndicator() {
+            const typingElement = document.createElement('div');
+            typingElement.id = 'typing-indicator'; 
+            typingElement.className = 'flex items-start gap-4';
+
+            if (currentModel === 'nexus' || currentModel === 'nexus-web') {
+                
+                let thinkingTitle = (currentModel === 'nexus-web') ? 'Searching...' : 'Thinking...';
+                let thinkingDetailsHtml = (currentModel === 'nexus-web')
+                    ? `
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Analyzing user prompt...</li>
+                            <li>Querying Google Search...</li>
+                            <li>Synthesizing search results...</li>
+                            <li>Formulating grounded response...</li>
+                        </ul>
+                    `
+                    : `
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Analyzing user prompt...</li>
+                            <li>Retrieving relevant context...</li>
+                            <li>Formulating witty response...</li>
+                            <li>Checking for mediocrity...</li>
+                        </ul>
+                    `;
+
+                typingElement.innerHTML = `
+                    <div class="avatar-ai flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-lg font-bold ring-2">A</div>
+                    <div class="flex-1">
+                        <div class="thinking-bubble p-4 rounded-xl rounded-tl-none w-max max-w-3xl">
+                            <div class="thinking-header flex justify-between items-center cursor-pointer" onclick="toggleThinkingDetails()">
+                                <span>${thinkingTitle}</span>
+                                <svg id="thinking-chevron" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 thinking-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </div>
+                            <div id="thinking-details" class="thinking-details">
+                                ${thinkingDetailsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (currentModel === 'aura-flux') { // NEW
+                // "Aura Flux" (Generating) Indicator
+                typingElement.innerHTML = `
+                    <div class="avatar-ai flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-lg font-bold ring-2">A</div>
+                    <div class="flex-1">
+                         <div class="thinking-bubble p-4 rounded-xl rounded-tl-none w-max">
+                            <div class="thinking-header flex items-center gap-2">
+                                <span>Generating Image...</span>
+                                <svg class="animate-spin h-5 w-5 text-[var(--color-text-muted)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // "Swift Mode" (3-dot) Indicator
+                typingElement.innerHTML = `
+                    <div class="avatar-ai flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-lg font-bold ring-2">A</div>
+                    <div class="flex-1">
+                         <div class="chat-bubble-ai p-4 rounded-xl rounded-tl-none">
+                            <div class="typing-indicator">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            chatMessages.appendChild(typingElement);
+            scrollToBottom();
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // --- NEW: Image Modal Functions ---
+        function openImageModal(src) {
+            modalImage.src = src;
+            modalDownloadBtn.href = src;
+            imageModal.classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            imageModal.classList.add('hidden');
+            modalImage.src = ''; // Clear src
+            modalDownloadBtn.href = '#';
+        }
+
+    </script>
+</body>
+</html>
